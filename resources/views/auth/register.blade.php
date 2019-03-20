@@ -68,10 +68,21 @@
                                 </button>
                             </div>
                         </div>
+                        <input type="hidden" name="ip" id="ip">
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+    <script>
+        $(function () {
+            $.getJSON('http://gd.geobytes.com/GetCityDetails?callback=?', function(data) {
+                $('#ip').val(data.geobytesremoteip);
+            });
+        });
+    </script>
 @endsection
