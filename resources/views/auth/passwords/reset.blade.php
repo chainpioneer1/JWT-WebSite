@@ -8,7 +8,25 @@
                 <div class="card-header">{{ __('Reset Password') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('password.update') }}">
+                    @if (session('status') === false)
+                        <div class="alert alert-warning" role="alert">
+                            {{ session('msg') }}
+                        </div>
+                    @endif
+
+                    @if (session('status') === true)
+                        <div class="alert alert-success" role="alert">
+                            {{ session('msg') }}
+                            @if(env('PRODUCTION')=='NO')
+                                <br />
+                                <span>Please redirect to </span>
+                                <br />
+                                <a href="{{session('redirect_link')}}">{{session('redirect_link')}}</a>
+                            @endif
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ url('password/reset_password') }}">
                         @csrf
 
                         <input type="hidden" name="token" value="{{ $token }}">
@@ -56,6 +74,7 @@
                                 </button>
                             </div>
                         </div>
+                        <input type="hidden" value="{{$token}}" name="reset_token">
                     </form>
                 </div>
             </div>

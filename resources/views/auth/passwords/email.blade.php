@@ -8,13 +8,25 @@
                 <div class="card-header">{{ __('Reset Password') }}</div>
 
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+                    @if (session('status') === false)
+                        <div class="alert alert-warning" role="alert">
+                            {{ session('msg') }}
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('password.email') }}">
+                    @if (session('status') === true)
+                        <div class="alert alert-success" role="alert">
+                            {{ session('msg') }}
+                            @if(env('PRODUCTION')=='NO')
+                                <br />
+                                <span>Please redirect to </span>
+                                <br />
+                                <a href="{{session('redirect_link')}}">{{session('redirect_link')}}</a>
+                            @endif
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ url('password/request_email') }}">
                         @csrf
 
                         <div class="form-group row">
@@ -44,4 +56,5 @@
         </div>
     </div>
 </div>
+
 @endsection
