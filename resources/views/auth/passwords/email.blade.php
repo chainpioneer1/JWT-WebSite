@@ -26,7 +26,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ url('password/request_email') }}">
+                    <form method="POST" action="{{ url('password/request_email') }}" novalidate>
                         @csrf
 
                         <div class="form-group row">

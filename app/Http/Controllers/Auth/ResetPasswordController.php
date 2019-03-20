@@ -46,6 +46,9 @@ class ResetPasswordController extends Controller
      */
     public function request_email(Request $request)
     {
+        $this->validate($request, [
+            'email'=>'required|email|exists:users'
+        ]);
         $email = $request->get('email');
         $user = User::where('email', $email)->first();
         if(!$user){
