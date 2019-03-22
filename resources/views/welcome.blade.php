@@ -8,7 +8,7 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <!-- Styles -->
         <style>
             html, body {
@@ -80,6 +80,13 @@
             @endif
 
             <div class="content">
+                @if(Session::has('message'))
+                    <div id="sessionMessage" class="alert alert-warning">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                        {{--<p class="center">{{ Session::get('message') }}</p>--}}
+                        <p class="center">dfsdfsdfsdfs</p>
+                    </div>
+                @endif
                 <div class="title m-b-md">
                     Welcome
                 </div>
@@ -87,4 +94,6 @@
             </div>
         </div>
     </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 </html>

@@ -16,7 +16,11 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
+Route::post('login', function (){
+   return 'No Allowed!';
+});
+Route::post('duologin', 'DuoController@duoLogin')->name('duoLogin');
+Route::post('postLogin', 'DuoController@postLogin')->name('postLogin');
 // Password routes
 Route::post('password/reset_password', 'Auth\ResetPasswordController@reset_password');
 Route::post('password/request_email', 'Auth\ResetPasswordController@request_email');
