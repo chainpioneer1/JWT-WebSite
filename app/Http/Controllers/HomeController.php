@@ -27,7 +27,56 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // ==================== Get Authentication token ================================
+        $url_1 = 'https://healthyco.com/api/v1/jb/api-token-auth/';
+
+        $context = stream_context_create(array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => 'Content-type: application/josn',
+                'content' => http_build_query(
+                    array(
+                        'email' => env('ADMIN_EMAIL'),
+                        'password' => env('ADMIN_PWD')
+                    )
+                ),
+                'timeout' => 60
+            )
+        ));
+
+        $resp = file_get_contents($url_1, FALSE, $context);
+        $resp = \GuzzleHttp\json_decode($resp);
+        \Log::info('first call response..........'.var_export($resp, true));
+
+        // ================================ get user token ==============================;
+        $client_admin_token = $resp->token;
+        $user = Auth::user();
+        $user_email = $user->email;
+        $resp_2 = file_get_contents("https://healthyco. com/api/v1/jb/users/".$user_email."/".$client_admin_token."/");
+        $resp_2 = \GuzzleHttp\json_decode($resp_2);
+        \Log::info('second call response................'.var_export($resp_2, true));
+        $user_token = $resp_2->user_token;
+
+        //====================================== get embedded url========================;
+        $url_3 = 'https://healthyco.com/api/v1/jb/api-token-auth/';
+        $context3 = stream_context_create(array(
+            'http' => array(
+                'method' => 'PUT',
+                'header' => array('Content-type'=> 'application/josn', 'x-auth-token'=>$client_admin_token),
+                'content' => http_build_query(
+                    array(
+                        'token' => $user_token
+                    )
+                ),
+                'timeout' => 60
+            )
+        ));
+        $resp3 = file_get_contents($url_3, FALSE, $context3);
+        $resp3 = \GuzzleHttp\json_decode($resp3);
+        \Log::info('third call response..........'.var_export($resp3, true));
+        $embedded_url = $resp3->url;
+
+        return view('home', compact('embedded_url'));
     }
 
     /**

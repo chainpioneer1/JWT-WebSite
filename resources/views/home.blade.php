@@ -15,6 +15,7 @@
                     @endif
 
                     You are logged in!
+                    <iframe src="{{$embedded_url}}" id="embedded_url" width="800" height="500" frameborder="0" allowtransparency="true" style="background:transparent;"></iframe>
                 </div>
             </div>
         </div>
