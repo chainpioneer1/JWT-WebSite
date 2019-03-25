@@ -19,6 +19,10 @@ Auth::routes();
 Route::post('login', function (){
    return 'No Allowed!';
 });
+Route::post('register', function (){
+    return 'No Allowed';
+});
+Route::post('duoregister', 'DuoController@duoregister')->name('duoregister');
 Route::post('duologin', 'DuoController@duoLogin')->name('duoLogin');
 Route::post('postLogin', 'DuoController@postLogin')->name('postLogin');
 // Password routes

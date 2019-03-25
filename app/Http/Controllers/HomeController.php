@@ -29,6 +29,7 @@ class HomeController extends Controller
     {
         // ==================== Get Authentication token ================================
         /////////////// curl test //////////////
+        $user = Auth::user();
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -68,7 +69,7 @@ class HomeController extends Controller
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://preverity-staging.juiceboxdata.com/api/v1/jb/users/russ.kenney@preverity.com/token/",
+            CURLOPT_URL => "https://preverity-staging.juiceboxdata.com/api/v1/jb/users/".$user->email."/token/",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,

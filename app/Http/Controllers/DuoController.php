@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 
 class DuoController extends Controller
@@ -24,26 +25,6 @@ class DuoController extends Controller
             'email'=>'required|email|exists:users',
             'password'=>'required|required'
         ]);
-
-////////////////////////////////// Testing /////////////////////////////////////////////////////
-
-//        $user = User::where('email', $request->get('email'))->first();
-//        $userid = $user->id;
-//
-//        /**
-//         * Log the user in by their ID
-//         */
-//
-//        Auth::loginUsingId($userid);
-//        if(Auth::check()){
-//            return redirect('home')->with('message', 'You have successfully logged id');
-//        }
-//        else{
-//            return "Unauthorized.";
-//        }
-
-////////////////////////////////// Testing end /////////////////////////////////////////////////////
-
 
 
         $user = array(
@@ -71,6 +52,20 @@ class DuoController extends Controller
         }
     }
 
+    public function duoregister(Request $request)
+    {
+        $this->validate($request, [
+            "email"=>"required|string|email|unique:users",
+            "password"=>"required|string|min:6|confirmed"
+        ]);
+        User::create([
+//            'name' => $data['name'],
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password')),
+            'IP'=>$request->get('ip')
+        ]);
+        return redirect('login')->with('status', 'Registered successfully');
+    }
 
     public function postLogin(Request $request)
     {
