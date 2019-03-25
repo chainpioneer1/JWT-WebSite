@@ -28,54 +28,105 @@ class HomeController extends Controller
     public function index()
     {
         // ==================== Get Authentication token ================================
-        $url_1 = 'https://healthyco.com/api/v1/jb/api-token-auth/';
+        /////////////// curl test //////////////
+        $curl = curl_init();
 
-        $context = stream_context_create(array(
-            'http' => array(
-                'method' => 'POST',
-                'header' => 'Content-type: application/josn',
-                'content' => http_build_query(
-                    array(
-                        'email' => env('ADMIN_EMAIL'),
-                        'password' => env('ADMIN_PWD')
-                    )
-                ),
-                'timeout' => 60
-            )
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => env('URL_SLICE')."/api/v1/jb/api-token-auth/",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"email\"\r\n\r\n".env('ADMIN_EMAIL')."\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"password\"\r\n\r\n".env('ADMIN_PWD')."\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
+            CURLOPT_HTTPHEADER => array(
+                "Content-Type: application/x-www-form-urlencoded",
+//                "Postman-Token: 6ffbfa29-0b9d-464e-b845-424d0b3f1082",
+                "cache-control: no-cache",
+                "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+            ),
         ));
 
-        $resp = file_get_contents($url_1, FALSE, $context);
-        $resp = \GuzzleHttp\json_decode($resp);
-        \Log::info('first call response..........'.var_export($resp, true));
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
 
-        // ================================ get user token ==============================;
-        $client_admin_token = $resp->token;
-        $user = Auth::user();
-        $user_email = $user->email;
-        $resp_2 = file_get_contents("https://healthyco. com/api/v1/jb/users/".$user_email."/".$client_admin_token."/");
-        $resp_2 = \GuzzleHttp\json_decode($resp_2);
-        \Log::info('second call response................'.var_export($resp_2, true));
-        $user_token = $resp_2->user_token;
+        curl_close($curl);
 
-        //====================================== get embedded url========================;
-        $url_3 = 'https://healthyco.com/api/v1/jb/api-token-auth/';
-        $context3 = stream_context_create(array(
-            'http' => array(
-                'method' => 'PUT',
-                'header' => array('Content-type'=> 'application/josn', 'x-auth-token'=>$client_admin_token),
-                'content' => http_build_query(
-                    array(
-                        'token' => $user_token
-                    )
-                ),
-                'timeout' => 60
-            )
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+
+        }
+
+        $resp = \GuzzleHttp\json_decode($response);
+//        echo "first call result";
+//        echo $resp->token;
+//
+//        // ================================ get user token ==============================;
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://preverity-staging.juiceboxdata.com/api/v1/jb/users/russ.kenney@preverity.com/token/",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_POSTFIELDS => "",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: JWT ".$resp->token,
+//                "Postman-Token: 3787e8fd-d416-4c93-a99f-ba72144150f1",
+                "cache-control: no-cache"
+            ),
         ));
-        $resp3 = file_get_contents($url_3, FALSE, $context3);
-        $resp3 = \GuzzleHttp\json_decode($resp3);
-        \Log::info('third call response..........'.var_export($resp3, true));
-        $embedded_url = $resp3->url;
 
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+//            echo "second call result";
+//            echo $response;
+        }
+        $resp_2 = \GuzzleHttp\json_decode($response);
+//        //====================================== get embedded url========================;
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://preverity-staging.juiceboxdata.com/api/v1/jb/apps/cbebbd0e/embed/",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "PUT",
+            CURLOPT_POSTFIELDS => "{\r\n\"token\":\"".$resp_2->token."\"\r\n}\r\n",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: JWT ".$resp->token,
+                "Content-Type: application/json",
+//                "Postman-Token: da22c9dc-0634-467f-8561-dc37a32b6b15",
+                "cache-control: no-cache"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+//            echo "third call result";
+//            echo $response;
+        }
+        $embedded_url = \GuzzleHttp\json_decode($response)->url;
         return view('home', compact('embedded_url'));
     }
 

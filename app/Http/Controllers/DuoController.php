@@ -24,6 +24,28 @@ class DuoController extends Controller
             'email'=>'required|email|exists:users',
             'password'=>'required|required'
         ]);
+
+////////////////////////////////// Testing /////////////////////////////////////////////////////
+
+//        $user = User::where('email', $request->get('email'))->first();
+//        $userid = $user->id;
+//
+//        /**
+//         * Log the user in by their ID
+//         */
+//
+//        Auth::loginUsingId($userid);
+//        if(Auth::check()){
+//            return redirect('home')->with('message', 'You have successfully logged id');
+//        }
+//        else{
+//            return "Unauthorized.";
+//        }
+
+////////////////////////////////// Testing end /////////////////////////////////////////////////////
+
+
+
         $user = array(
             'email'=>$request->get('email'),
             'password'=>$request->get('password')
